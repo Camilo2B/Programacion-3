@@ -1,0 +1,35 @@
+defmodule Util do
+  # Mostrar mensaje - sin cambios necesarios
+  def show_message(message) when is_binary(message) do
+    System.cmd("java", ["-cp", ".", "Mensaje", message])
+  end
+
+  # Cláusula para input con :string
+  def input(message, :string) when is_binary(message) do
+    {output, _exit_code} = System.cmd("java", ["-cp", ".", "Mensaje", "input", message, ":string"])
+    output |> String.trim()
+  end
+
+  # Cláusula para input con :integer
+  def input(message, :integer) when is_binary(message) do
+    message
+    |> input(:string)
+    |> String.to_integer()
+  end
+
+  # Cláusula para input con :float
+  def input(message, :float) when is_binary(message) do
+    message
+    |> input(:string)
+    |> String.to_float()
+  end
+
+  # Cláusula alternativa con guarda para manejar tipos inválidos
+  def input(message, type) when not is_binary(message) do
+    raise ArgumentError, "El mensaje debe ser una cadena de texto"
+  end
+
+  def input(_message, type) do
+    raise ArgumentError, "Tipo no soportado: #{inspect(type)}. Use :string, :integer, o :float"
+  end
+end
